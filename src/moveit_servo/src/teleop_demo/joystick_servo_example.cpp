@@ -55,7 +55,7 @@
 #include <thread>
 
 // We'll just set up parameters here
-const std::string JOY_TOPIC = "/joy";
+const std::string JOY_TOPIC = "/spacenav/joy";
 const std::string TWIST_TOPIC = "/servo_node/delta_twist_cmds";
 const std::string JOINT_TOPIC = "/servo_node/delta_joint_cmds";
 const std::string EEF_FRAME_ID = "gripper_link"; // panda_hand
@@ -124,19 +124,14 @@ bool convertJoyToCmd(const std::vector<float>& axes, const std::vector<int>& but
   twist->twist.angular.z = roll_positive + roll_negative;
   */
 
-  twist->twist.linear.z = axes[LEFT_STICK_Y];
-  twist->twist.linear.x = axes[LEFT_STICK_X];
+  /*for spacemouse*/
+  twist->twist.linear.x = axes[1];   // X
+  twist->twist.linear.y = -1*axes[0];   // Y
+  twist->twist.linear.z = axes[2];   // Z
 
-  double lin_y_right = 0.5 * (axes[RIGHT_TRIGGER] - AXIS_DEFAULTS.at(RIGHT_TRIGGER));
-  double lin_y_left = -0.5 * (axes[LEFT_TRIGGER] - AXIS_DEFAULTS.at(LEFT_TRIGGER));
-  twist->twist.linear.y = lin_y_right + lin_y_left;
-
-  twist->twist.angular.y = axes[RIGHT_STICK_X];
-  twist->twist.angular.x = axes[RIGHT_STICK_Y];
-
-  double roll_positive = -1 * buttons[RIGHT_BUMPER];
-  double roll_negative = (buttons[LEFT_BUMPER]);
-  twist->twist.angular.z = roll_positive + roll_negative;
+  twist->twist.angular.x = axes[4];  // Roll
+  twist->twist.angular.y = -1*axes[3];  // Pitch
+  twist->twist.angular.z = axes[5];  // Yaw
 
   return true;
   //}

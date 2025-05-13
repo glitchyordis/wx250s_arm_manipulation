@@ -31,7 +31,7 @@ class Joy_subscriber(Node):
         super().__init__('joy_subscriber')
         self.subscription = self.create_subscription(
             Joy,
-            'joy',
+            '/spacenav/joy',
             self.listener_callback,
             10)
         self.subscription
@@ -42,7 +42,10 @@ class Joy_subscriber(Node):
     def listener_callback(self, data):
         global finger_pos
 
-        finger_pos += self.C*data.axes[6]
+        if data.buttons[0]:
+            finger_pos += self.C
+        if data.buttons[1]:
+            finger_pos -= self.C
 
         if finger_pos > self.limit:
             finger_pos = self.limit
